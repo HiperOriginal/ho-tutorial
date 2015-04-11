@@ -1,0 +1,27 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- @element ho-tutorial -->
+<polymer-element name="ho-tutorial" attributes="name">
+    <template>
+        <style>
+            :host {
+                font-family: sans-serif;
+            }
+        </style>
+        Hello {{name}}!
+    </template>
+    <script>
+        Polymer('ho-tutorial', {
+            /**
+             * The name of the person you want to say hello to.
+             * @attribute name
+             * @type string
+             * @default "Ho Tutorial"
+             */
+            name: 'Ho Tutorial',
+            ready: function() {
+
+            }
+        });
+    </script>
+</polymer-element>
