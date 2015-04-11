@@ -1,0 +1,24 @@
+{
+  "name": "ho-tutorial",
+  "version": "0.1.0",
+  "homepage": "https://github.com/HiperOriginal/ho-tutorial",
+  "authors": [
+    "Leo Batista <leobatista021@gmail.com>"
+  ],
+  "description": "Displays a floating step by step tutorial linked to interface elements.",
+  "main": "ho-tutorial.html",
+  "keywords": [
+    "HiperOriginal",
+    "ho",
+    "tutorial",
+    "web-component"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
