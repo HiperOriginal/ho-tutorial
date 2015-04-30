@@ -1,42 +1,292 @@
-<link rel="import" href="../polymer/polymer.html">
-
 <!--
 Displays a floating step by step tutorial linked to interface elements.
-##### Example:
-    <ho-tutorial></ho-tutorial>
+
+The dialog boxes uses [paper-action-dialog](https://www.polymer-project.org/0.5/docs/elements/paper-action-dialog.html)
+from Polymer paper elements.
+
+Check out the [ho-tutorial-step](step.html)
+element page to see all options available to configure each step
+of tutorial.
+
+##### Example
+
+    <ho-tutorial>
+      <ho-tutorial-step heading="Heading of the dialog" target="{{firstStepTarget}}">
+        <p>This text is shown as the content of the dialog</p>
+      </ho-tutorial-step>
+      <ho-tutorial-step heading="Step 2" moreInfoAvailable on-info-request="{{showMoreInfo}}">
+        <p>Lorem ipsum dolor</p>
+      </ho-tutorial-step>
+    </ho-tutorial>
+
 @element ho-tutorial
-@version 0.1.1
+@version 0.1.2
 @blurb Displays a floating step by step tutorial linked to interface elements.
 @status alpha
 @homepage http://hiperoriginal.github.io/components/ho-tutorial
 -->
-<polymer-element name="ho-tutorial" attributes="name">
-    <template>
-        <style>
-            :host {
-                font-family: sans-serif;
-            }
-        </style>
-        Hello {{name}}! I'm version 0.1.1
-    </template>
-    <script>
-        Polymer('ho-tutorial', {
-            /**
-             * The name of the person you want to say hello to.
-             * @attribute name
-             * @type string
-             * @default "Ho Tutorial"
-             */
-            name: 'Ho Tutorial',
-            /**
-             * The `aProp` is a property that does something cool.
-             *
-             * @property aProp
-             * @type bool
-             */
-            aProp: false,
-            ready: function() {
 
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../dynamic-backdrop/dynamic-backdrop.html">
+<link rel="import" href="ho-tutorial-step.html">
+
+<polymer-element name="ho-tutorial">
+
+    <template>
+        <content></content>
+
+        <dynamic-backdrop target="{{currentTarget}}" offset="{{backdropOffset}}"
+                          visible="{{backdropVisible}}" host="{{stage}}">
+        </dynamic-backdrop>
+    </template>
+
+    <script>
+        Polymer({
+            publish: {
+                /**
+                 * Aligns each dialog next to the steps's target
+                 * element. The optimal position is determined automatically.
+                 *
+                 * If no target element is specified or this
+                 * options is turned off, all dialogs will be centered
+                 * on screen. This could cause overlap with the highlighted
+                 * area.
+                 *
+                 * @attribute alignDialogs
+                 * @type boolean
+                 * @default true
+                 */
+                alignDialogs: true,
+
+                /**
+                 * Config object used in tutorial. The config are applied
+                 * on all steps.
+                 *
+                 * Keys: `texts`
+                 *
+                 * @attribute config
+                 * @type Object
+                 * @default {...}
+                 */
+                config: {
+                    /**
+                    * Texts used in tutorial. Allows to do
+                    * internationalization. The texts are applied
+                    * on all steps.
+                    *
+                    * Keys: `next`, `back`, `abort`, `finish`, `moreInfo`, `of`, `step`
+                    *
+                    * @attribute config.texts
+                    * @type Object
+                    * @default {...}
+                    */
+                    texts: {
+                        next: 'next',
+                        back: 'back',
+                        abort: 'abort',
+                        finish: 'finish',
+                        moreInfo: 'more info',
+                        of: 'of',
+                        step: 'step'
+                    }
+                },
+
+                /**
+                 * The total of steps in tutorial.
+                 *
+                 * @attribute stepsTotal
+                 * @type Number
+                 * @default 0
+                 */
+                stepsTotal: 0,
+
+                /**
+                 * The element the tutorial should be presented in.
+                 * The backdrops are restricted to the area of
+                 * this element.
+                 *
+                 * @attribute stage
+                 * @type Element
+                 * @default document.body
+                 */
+                stage: document.body
+
+            },
+            lastTimeStamp: 0,
+
+            ready: function() {
+                this._initialize();
+                this._update();
+            },
+
+            /**
+             * Starts the tutorial and shows the first step. If
+             * this method is called in between of a tutorial, the
+             * tutorial is restarted.
+             *
+             * @method start
+             */
+            start: function() {
+                this.abort();
+                this.currentIndex = -1;
+                this.next(event);
+            },
+
+            /**
+             * Moves forward to the next step. Call this method
+             * without arguments to move forward programmatically.
+             *
+             * @method next
+             */
+            next: function(event) {
+                // Prevents duplicated events
+                if (event) {
+                    if (event.timeStamp == this.lastTimeStamp) {
+                        return;
+                    }
+                    this.lastTimeStamp = event.timeStamp;
+                }
+
+                // Increments currentIndex
+                this.currentIndex += 1;
+                //console.log("currentIndex: " + this.currentIndex);
+
+                // Opens new step
+                if (this.currentIndex < this.children.length) {
+                    var nextStep = this.children[this.currentIndex]; //associates to equivalent child at the flow
+                    nextStep.firstStep = this.currentIndex == 0; //sets true if step to show is the first step at the flow
+                    nextStep.lastStep = this.currentIndex + 1 == this.children.length; //sets true if step to show is the first step at the flow
+
+                    nextStep.open();
+
+                    this.backdropVisible = nextStep.backdrop;
+                    this.currentTarget = nextStep.target;
+                    this.backdropOffset = nextStep.backdropOffset;
+                } else {
+                    this.abort();
+                }
+
+                // Closes old step
+                if (this.currentIndex > 0 && this.currentIndex < this.children.length) {
+                    var stepToClose = this.children[this.currentIndex-1]
+                    setTimeout(function () {
+                        stepToClose.close();
+                    }, 50);
+                }
+            },
+
+            /**
+             * Moves backward to the previous step. Call this method
+             * without arguments to move backward programmatically.
+             *
+             * @method back
+             */
+            back: function(event) {
+                // Prevents duplicated events
+                if (event) {
+                    if (event.timeStamp == this.lastTimeStamp) {
+                        return;
+                    }
+                    this.lastTimeStamp = event.timeStamp;
+                }
+
+                // Decrements currentIndex
+                this.currentIndex -= 1;
+                //console.log("currentIndex: " + this.currentIndex);
+
+                // Opens new step
+                if (this.currentIndex < this.children.length && this.currentIndex>= 0) {
+                    var newStep = this.children[this.currentIndex]; //associates to equivalent child at the flow
+                    newStep.firstStep = this.currentIndex == 0; //sets true if step to show is the first step at the flow
+                    newStep.lastStep = this.currentIndex - 1 == this.children.length; //sets true if step to show is the first step at the flow
+
+                    newStep.open();
+
+                    this.backdropVisible = newStep.backdrop;
+                    this.currentTarget = newStep.target;
+                    this.backdropOffset = newStep.backdropOffset;
+                } else {
+                    this.abort();
+                }
+
+                // Closes old step
+                if (this.currentIndex >= 0 && this.currentIndex < this.children.length-1) {
+                    var oldStep = this.children[this.currentIndex + 1]
+                    setTimeout(function () {
+                        oldStep.close();
+                    }, 50);
+                }
+            },
+
+            /**
+             * Aborts a running tutorial.
+             * Closes all dialogues and resets properties.
+             *
+             * @method abort
+             */
+            abort: function(event) {
+                this._closeAll();
+                this.currentTarget = null;
+                this.currentIndex = -1;
+                this.backdropVisible = false;
+            },
+            _layoutDialog: function(event) {
+                if (this.alignDialogs && event.target.target) {
+                    var dialog = event.detail.target;
+                    var dialogMargin = parseFloat(window.getComputedStyle(dialog).marginTop);
+                    var targetRect = event.target.target.getBoundingClientRect();
+
+                    var left = targetRect.left > window.innerWidth - targetRect.right;
+
+                    // Align top with the target element
+                    dialog.style.top = targetRect.top - dialogMargin + 'px';
+                    if (left) {
+                        // Align left of the target element
+                        dialog.style.right = window.innerWidth - targetRect.left + 'px';
+                        dialog.dimensions.position = {v: 'top', h: 'right'};
+                    } else {
+                        // Align right of the target element
+                        dialog.style.left = targetRect.right + 'px';
+                        dialog.dimensions.position = {v: 'top', h: 'left'};
+                    }
+                }
+            },
+            // Closes all steps
+            _closeAll: function() {
+                for (var i = 0; i < this.children.length; i++) {
+                    this.children[i].close();
+                }
+            },
+            // Registers all steps in tutorial
+            _registerSteps: function() {
+                for (var i = 0; i < this.children.length; i++) {
+                    this.children[i].config = this.config; //sets config
+                    this.children[i].step = i+1; //sets step value
+                    this.children[i].index = i; //sets step index
+                    this.children[i].stepsTotal = this.children.length; //sets stepsTotal
+                }
+            },
+            // Initializes the tutorial
+            _initialize: function() {
+                this._registerSteps();
+                this.abort();
+                this.addEventListener('next', this.next.bind(this)); // , function(e){this.next(e)}
+                this.addEventListener('back', this.back.bind(this));
+                this.addEventListener('abort', this.abort.bind(this));
+                this.addEventListener('info-request', this.back.bind(this));
+                this.addEventListener('core-overlay-position', this._layoutDialog.bind(this));
+                this.addEventListener('core-overlay-close-completed', this._log.bind(this));
+            },
+            // Updates the children inside the tutorial when some change occurs
+            _update: function() {
+                this._registerSteps();
+                this.onMutation(this, this._update); //watches component changes
+            },
+            // temp (delete)
+            _log: function(){
+                console.log("core-overlay-close-completed");
             }
         });
     </script>

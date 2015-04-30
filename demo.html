@@ -1,14 +1,131 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-    <script src="../webcomponentsjs/webcomponents.js"></script>
-    <link rel="import" href="../ho-tutorial/ho-tutorial.html" />
+<!doctype html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ho-tutorial demo</title>
+    <script src="../webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="ho-tutorial.html">
+
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            margin-top: 0;
+            padding-left: 20px;
+            padding-top: 20px;
+        }
+
+        button {
+            margin-left: 20px;
+        }
+
+        .container {
+            background-color: #eee;
+            border: 2px solid #444;
+            margin: 20px;
+            height: 250px;
+        }
+
+        .container .example {
+            float: left;
+            margin-top: 40px;
+            margin-left: 11%;
+            margin-right: 11%;
+            width: 11%;
+            height: 150px;
+        }
+
+        #example1 {
+            background-color: red;
+            border-radius: 150px;
+        }
+
+        #example2 {
+            background-color: green;
+            border-radius: 150px;
+        }
+
+        #example3 {
+            background-color: blue;
+            border-radius: 150px;
+        }
+    </style>
 </head>
-<body>
-    <h1>This is the web component ho-tutorial:</h1>
-    <br/>
-    <ho-tutorial></ho-tutorial>
+
+<body unresolved>
+    <template is="auto-binding" id="demo">
+        <h1>Demo of ho-tutorial web component</h1>
+
+        <button on-click="{{start}}">Start Demo Ho Tutorial</button>
+
+        <div class="container">
+            <div id="example1" class="example"></div>
+            <div id="example2" class="example"></div>
+            <div id="example3" class="example"></div>
+        </div>
+
+        <ho-tutorial id="tutorial_1" config="{{tutorialConfig}}" stage="{{tutorialStage}}">
+            <ho-tutorial-step heading="Red spot" target="{{step1Target}}" backdropOffset="{{step1Offset}}">
+                The component automatically highlights the target element and positions the dialog.
+                An offset could be configured around the target element to be more flexible in highlighting.
+            </ho-tutorial-step>
+
+            <ho-tutorial-step heading="Green spot" targetSelector="#example2" backdrop="false">
+                <p>The backdrop could be easily disabled. By using the targetSelector attribute, the target element could be directly defined.</p>
+            </ho-tutorial-step>
+
+            <ho-tutorial-step heading="Blue spot" target="{{step3Target}}" moreInfoAvailable on-info-request="{{showMoreInfo}}">
+                <p>Now the dialog moved to the left side of the target, because there is more room available.</p>
+            </ho-tutorial-step>
+
+            <ho-tutorial-step heading="Final step">
+                <p>
+                    This step is configured without a target. Because it is the last step,
+                    the button text at the bottom right changed to 'Finish'.
+                </p>
+            </ho-tutorial-step>
+        </ho-tutorial>
+
+    </template>
+
+    <script type="text/javascript">
+        (function(window, document, undefined) {
+            var demo = document.querySelector('#demo');
+
+            demo.start = function() {
+                demo.tutorialConfig = {};
+                demo.tutorialConfig.texts = {
+                    next: 'Próximo',
+                    back: 'Anterior',
+                    abort: 'Parar',
+                    finish: 'Concluir',
+                    moreInfo: 'Ver Mais',
+                    of: 'de',
+                    step:'Passo'
+                }
+                //demo.tutorialStage = document.querySelector('.container');
+                demo.step1Target = document.querySelector('#example1');
+                demo.step1Offset = {left: 2, right: 2, top: 2, bottom: 2};
+                demo.step3Target = document.querySelector('#example3');
+
+                var tutorial = document.querySelector('#tutorial_1');
+                tutorial.start();
+            };
+
+            demo.showMoreInfo = function() {
+                window.open('http://webcomponents.org/', '_blank');
+            };
+
+            demo.log = function(info) {
+                console.log(info);
+            };
+        })(window, document);
+    </script>
 </body>
 </html>

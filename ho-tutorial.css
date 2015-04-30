@@ -1,0 +1,98 @@
+html /deep/ #dialog {
+    font-family: "Open Sans", sans-serif;
+    font-size: 15px;
+    color: #6f757a;
+    min-width: 260px;
+    max-width: 320px;
+    border-radius: 4px;
+}
+html /deep/ #dialog /deep/ paper-shadow  {
+    border-radius: 4px;
+}
+html /deep/ #dialog /deep/ #scroller {
+    text-align: center;
+    min-width: 260px;
+}
+html /deep/ #dialog /deep/ #scroller h1 {
+    font-size: 18px;
+    text-transform: uppercase;
+}
+html /deep/ #dialog /deep/ #actions {
+    margin:0 auto;
+    padding: 20px;
+}
+html /deep/ #dialog #close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    color: #7e9599;
+    border-radius: 50%;
+}
+html /deep/ #dialog #description {
+    line-height: 1.4em;
+}
+html /deep/ #dialog #pagination {
+    color: #c1c3c5;
+    font-size: 12px;
+}
+html /deep/ #dialog core-icon {
+    width: 40px;
+    height: 40px;
+}
+html /deep/ #dialog paper-button {
+    margin: 0 0.8em;
+    border-radius: 2px;
+    font-size: 13px;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+html /deep/ #dialog paper-button /deep/ paper-shadow {
+    border-radius: 2px;
+}
+html /deep/ #dialog paper-button span {
+    margin-bottom: 2px;
+}
+html /deep/ #dialog paper-button.right span {
+    margin-left: 0.4em;
+}
+html /deep/ #dialog paper-button.left span {
+    margin-right: 0.4em;
+}
+html /deep/ #dialog paper-button.no-icon div {
+    height: 32px;
+    padding: 0 0.8em;
+}
+html /deep/ #dialog paper-button#finish span {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+html /deep/ #dialog paper-button /deep/ .button-content {
+    padding: 0.4em 0.57em
+}
+html /deep/ #dialog paper-button.right /deep/ .button-content {
+    padding: 0.1em 0.1em 0.1em 0.9em
+}
+html /deep/ #dialog paper-button.left /deep/ .button-content {
+    padding: 0.1em 0.9em 0.1em 0.1em
+}
+html /deep/ #dialog paper-button.colored.orange {
+    color:white;
+    background-color: #ff8400;
+    border-color: #ff8400;
+}
+html /deep/ #dialog paper-button.colored.orange:hover {
+    color:white;
+    background-color: #fc7800;
+    border-color: #fc7800;
+}
+html /deep/ #dialog paper-button.colored.gray {
+    color:white;
+    background-color: #6f757a;
+    border-color: #6f757a;
+}
+html /deep/ #dialog paper-button.colored.gray:hover {
+    color:white;
+    background-color: #656b70;
+    border-color: #656b70;
+}

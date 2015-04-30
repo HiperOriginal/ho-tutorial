@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../ho-tutorial.html">
+</head>
+<body>
+
+<!-- You can use the document as a place to set up your fixtures. -->
+<ho-tutorial></ho-tutorial>
+
+<script>
+    var elem = document.querySelector('ho-tutorial');
+    suite('<ho-tutorial>', function() {
+        test('defines the "author" property', function() {
+            assert.equal(elem.author.name, 'Léo Batista');
+            assert.equal(elem.author.image, 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg');
+        });
+        test('says hello', function() {
+            assert.equal(elem.sayHello(), 'ho-tutorial says, Hello World!');
+            var greetings = elem.sayHello('greetings Earthlings');
+            assert.equal(greetings, 'ho-tutorial says, greetings Earthlings');
+        });
+        test('fires lasers', function(done) {
+            elem.addEventListener('ho-tutorial-lasers', function(event) {
+                assert.equal(event.detail.sound, 'Pew pew!');
+                done();
+            });
+            elem.fireLasers();
+        });
+    });
+</script>
+
+</body>
+</html>
