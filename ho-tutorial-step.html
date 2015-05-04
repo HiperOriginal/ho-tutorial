@@ -24,7 +24,7 @@ content presented in the dialog that is shown when the step is activated.
 
     <!-- Default Template -->
     <template>
-        <paper-action-dialog data-index="{{index}}" transition="core-transition-center" heading="{{heading}}" id="dialog" class="default-template" autoCloseDisabled>
+        <paper-action-dialog transition="core-transition-center" heading="{{heading}}" id="dialog" class="default-template" autoCloseDisabled>
             <!-- close -->
             <core-icon-button id="close" icon="close" on-click="{{_abort}}" ></core-icon-button>
 
@@ -33,8 +33,8 @@ content presented in the dialog that is shown when the step is activated.
                 <content></content>
             </p>
 
-            <!-- pagination -->
-            <span id="pagination">{{config.texts.step}} {{step}} {{config.texts.of}} {{stepsTotal}}</span> // "Step X of Total"
+            <!-- pagination (Step X of Total) -->
+            <span id="pagination">{{config.texts.step}} {{step}} {{config.texts.of}} {{stepsTotal}}</span>
 
             <template if="{{moreInfoAvailable}}">
                 <core-icon-button id="info" icon="info" on-click="{{_infoRequest}}" ></core-icon-button>
@@ -65,194 +65,194 @@ content presented in the dialog that is shown when the step is activated.
     </template>
 
     <script>
-    Polymer({
-        publish: {
-            /**
-            * The template of current step.
-            *
-            * @attribute template
-            * @type string
-            * @default 'default'
-            */
-            template: 'default',
-            /**
-            * The heading of the dialog which is shown
-            * when this step is activated.
-            *
-            * @attribute heading
-            * @type string
-            * @default ''
-            */
-            heading: '',
+        Polymer({
+            publish: {
+                /**
+                 * The template of current step.
+                 *
+                 * @attribute template
+                 * @type string
+                 * @default 'default'
+                 */
+                template: 'default',
+                /**
+                 * The heading of the dialog which is shown
+                 * when this step is activated.
+                 *
+                 * @attribute heading
+                 * @type string
+                 * @default ''
+                 */
+                heading: '',
+
+                /**
+                 * The element that should be highlighted
+                 * when this step is active. Could be
+                 * omitted.
+                 *
+                 * Use either `target` or `targetSelector`.
+                 * `target` is overridden, when both values
+                 * are provided.
+                 *
+                 * @attribute target
+                 * @type Element
+                 * @default null
+                 */
+                target: null,
+
+                /**
+                 * The element that should be highlighted
+                 * when this step is active, defined by an
+                 * selector.
+                 *
+                 * Use either `target` or `targetSelector`.
+                 * The `target` attribute will be
+                 * set accordingly, when a `targetSelector` is
+                 * provided.
+                 *
+                 * @attribute targetSelector
+                 * @type string
+                 * @default null
+                 */
+                targetSelector: null,
+
+                /**
+                 * If a backdrop should be shown behind
+                 * the dialog and around the target
+                 * element.
+                 *
+                 * @attribute backdrop
+                 * @type boolean
+                 * @default true
+                 */
+                backdrop: true,
+
+                /**
+                 * If there is further information
+                 * available for this step the user could
+                 * request.
+                 *
+                 * An `info-request` event is fired, when
+                 * the user asks for the additional info.
+                 *
+                 * @attribute moreInfoAvailable
+                 * @type boolean
+                 * @default false
+                 */
+                moreInfoAvailable: false,
+
+                /**
+                 * If the user be able to skip
+                 * this step.
+                 *
+                 * @attribute nextAvailable
+                 * @type boolean
+                 * @default true
+                 */
+                nextAvailable: true,
+
+                /**
+                 * If the user be able to back
+                 * to previous step.
+                 *
+                 * @attribute backAvailable
+                 * @type boolean
+                 * @default true
+                 */
+                backAvailable: true,
+
+                /**
+                 * Defines an offset around the target element that
+                 * should not be covered by the backdrop.
+                 *
+                 * Default:
+                 *     {top: 0, right: 0, bottom: 0, left: 0}
+                 *
+                 * @attribute backdropOffset
+                 * @type Object
+                 * @default {...}
+                 */
+                backdropOffset: {top: 0, right: 0, bottom: 0, left: 0},
+
+                /**
+                 * If this step is the first step. Changes
+                 * the template of the dialog.
+                 *
+                 * Is set automatically by the enclosing `ho-tutorial`
+                 * component.
+                 *
+                 * @attribute firstStep
+                 * @type boolean
+                 * @default false
+                 */
+                firstStep: false,
+
+                /**
+                 * If this step is the last step. Changes
+                 * the template of the dialog.
+                 *
+                 * Is set automatically by the enclosing `ho-tutorial`
+                 * component.
+                 *
+                 * @attribute lastStep
+                 * @type boolean
+                 * @default false
+                 */
+                lastStep: false
+            },
+            open: function() {
+                this.$.dialog.open();
+                //console.log(this.$.dialog);
+
+            },
+            close: function() {
+                this.$.dialog.close();
+                //console.log(this.$.dialog);
+            },
 
             /**
-            * The element that should be highlighted
-            * when this step is active. Could be
-            * omitted.
-            *
-            * Use either `target` or `targetSelector`.
-            * `target` is overridden, when both values
-            * are provided.
-            *
-            * @attribute target
-            * @type Element
-            * @default null
-            */
-            target: null,
-
-            /**
-            * The element that should be highlighted
-            * when this step is active, defined by an
-            * selector.
-            *
-            * Use either `target` or `targetSelector`.
-            * The `target` attribute will be
-            * set accordingly, when a `targetSelector` is
-            * provided.
-            *
-            * @attribute targetSelector
-            * @type string
-            * @default null
-            */
-            targetSelector: null,
-
-            /**
-            * If a backdrop should be shown behind
-            * the dialog and around the target
-            * element.
-            *
-            * @attribute backdrop
-            * @type boolean
-            * @default true
-            */
-            backdrop: true,
-
-            /**
-            * If there is further information
-            * available for this step the user could
-            * request.
-            *
-            * An `info-request` event is fired, when
-            * the user asks for the additional info.
-            *
-            * @attribute moreInfoAvailable
-            * @type boolean
-            * @default false
-            */
-            moreInfoAvailable: false,
-
-            /**
-            * If the user be able to skip
-            * this step.
-            *
-            * @attribute nextAvailable
-            * @type boolean
-            * @default true
-            */
-            nextAvailable: true,
-
-            /**
-             * If the user be able to back
-             * to previous step.
+             * The `info-request` event is fired whenever the
+             * user asks for further information to the step.
              *
-             * @attribute backAvailable
-             * @type boolean
-             * @default true
+             * @event info-request
              */
-            backAvailable: true,
+            _infoRequest: function(event) {
+                this.fire('info-request', {index: this.index});
+            },
 
             /**
-            * Defines an offset around the target element that
-            * should not be covered by the backdrop.
-            *
-            * Default:
-            *     {top: 0, right: 0, bottom: 0, left: 0}
-            *
-            * @attribute backdropOffset
-            * @type Object
-            * @default {...}
-            */
-            backdropOffset: {top: 0, right: 0, bottom: 0, left: 0},
+             * The `abort` event is fired whenever the
+             * user aborts the tutorial at the step.
+             *
+             * @event abort
+             */
+            _abort: function(event) {
+                this.fire('abort', {index: this.index});
+            },
 
             /**
-            * If this step is the first step. Changes
-            * the template of the dialog.
-            *
-            * Is set automatically by the enclosing `ho-tutorial`
-            * component.
-            *
-            * @attribute firstStep
-            * @type boolean
-            * @default false
-            */
-            firstStep: false,
+             * The `next` event is fired whenever the
+             * user goes to next step.
+             *
+             * @event next
+             */
+            _next: function(event) {
+                this.fire('next', {index: this.index}); // fire(type, detail, targetNode, bubbles?, cancelable?)
+            },
 
             /**
-            * If this step is the last step. Changes
-            * the template of the dialog.
-            *
-            * Is set automatically by the enclosing `ho-tutorial`
-            * component.
-            *
-            * @attribute lastStep
-            * @type boolean
-            * @default false
-            */
-            lastStep: false
-        },
-        open: function() {
-            this.$.dialog.open();
-            //console.log("Open index: "+ this.index +" / " + this.$.dialog);
+             * The `back` event is fired whenever the
+             * user goes to previous step.
+             *
+             * @event back
+             */
+            _back: function(event) {
+                this.fire('back', {index: this.index});
+            },
 
-        },
-        close: function() {
-            this.$.dialog.close();
-            //console.log("Close index: "+ this.index +" / " + this.$.dialog);
-        },
-
-        /**
-        * The `info-request` event is fired whenever the
-        * user asks for further information to the step.
-        *
-        * @event info-request
-        */
-        _infoRequest: function(event) {
-            this.fire('info-request', {index: this.index});
-        },
-
-        /**
-         * The `abort` event is fired whenever the
-         * user aborts the tutorial at the step.
-         *
-         * @event abort
-         */
-        _abort: function(event) {
-            this.fire('abort', {index: this.index});
-        },
-
-        /**
-         * The `next` event is fired whenever the
-         * user goes to next step.
-         *
-         * @event next
-         */
-        _next: function(event) {
-            this.fire('next', {index: this.index}); // fire(type, detail, targetNode, bubbles?, cancelable?)
-        },
-
-        /**
-         * The `back` event is fired whenever the
-         * user goes to previous step.
-         *
-         * @event back
-         */
-        _back: function(event) {
-            this.fire('back', {index: this.index});
-        },
-
-        targetSelectorChanged: function() {
-          this.target = document.querySelector(this.targetSelector);
-        }
-  });
-  </script>
+            targetSelectorChanged: function() {
+                this.target = document.querySelector(this.targetSelector);
+            }
+        });
+    </script>
 </polymer-element>
