@@ -25,7 +25,7 @@
     "polymer": "~0.5.5",
     "core-icons": "core-icons#~0.5.5",
     "core-icon-button": "core-icon-button#~0.5.5",
-    "paper-action-dialog": "paper-action-dialog#~0.5.5",
+    "paper-dialog": "paper-dialog#~0.5.5",
     "paper-button": "paper-button#~0.5.5",
 
     "dynamic-backdrop": "~1.2.2"
