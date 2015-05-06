@@ -20,7 +20,7 @@ of tutorial.
     </ho-tutorial>
 
 @element ho-tutorial
-@version 0.1.4
+@version 0.1.5
 @blurb Displays a floating step by step tutorial linked to interface elements.
 @status alpha
 @homepage http://hiperoriginal.github.io/components/ho-tutorial
@@ -130,6 +130,7 @@ of tutorial.
              */
             start: function() {
                 this.abort();
+                this._update();
                 this.next();
             },
 
@@ -270,6 +271,7 @@ of tutorial.
                     this.children[i].config = this.config; //sets config
                     this.children[i].step = i+1; //sets step value
                     this.children[i].stepsTotal = this.children.length; //sets stepsTotal
+                    this.children[i].target = document.querySelector(this.children[i].targetSelector); //updates step target
                 }
             },
             // Initializes the tutorial
