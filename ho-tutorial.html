@@ -8,6 +8,9 @@ Check out the [ho-tutorial-step](step.html)
 element page to see all options available to configure each step
 of tutorial.
 
+Check out the [ho-backdrop](backdrop.html)
+element page to see how it is implemented at tutorial.
+
 ##### Example
 
     <ho-tutorial>
@@ -20,16 +23,14 @@ of tutorial.
     </ho-tutorial>
 
 @element ho-tutorial
-@version 0.1.5
+@version 0.1.6
 @blurb Displays a floating step by step tutorial linked to interface elements.
 @status alpha
 @homepage http://hiperoriginal.github.io/components/ho-tutorial
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../dynamic-backdrop/dynamic-backdrop.html">
+<link rel="import" href="ho-backdrop.html">
 <link rel="import" href="ho-tutorial-step.html">
 
 <polymer-element name="ho-tutorial">
@@ -37,9 +38,9 @@ of tutorial.
     <template>
         <content></content>
 
-        <dynamic-backdrop target="{{currentTarget}}" offset="{{backdropOffset}}"
-                          visible="{{backdropVisible}}" host="{{stage}}">
-        </dynamic-backdrop>
+        <ho-backdrop target="{{currentTarget}}" offset="{{backdropOffset}}"
+                          visible="{{backdropVisible}}" stage="{{stage}}">
+        </ho-backdrop>
     </template>
 
     <script>
@@ -235,13 +236,106 @@ of tutorial.
                 if (this.alignDialogs && event.target.target) {
                     var dialog = event.detail.target;
                     var dialogMargin = parseFloat(window.getComputedStyle(dialog).marginTop);
+                    var dialogWidth = parseFloat(window.getComputedStyle(dialog).width);
+                    var dialogHeight = parseFloat(window.getComputedStyle(dialog).height);
+                    var dialogBackgroundColor = window.getComputedStyle(dialog).backgroundColor;
                     var targetRect = event.target.target.getBoundingClientRect();
+                    var targetMiddle = targetRect.bottom - (targetRect.height / 2);
+                    var targetCenter = targetRect.right - (targetRect.width / 2);
+                    var step = this.children[this.currentIndex];
+                    var arrow = dialog.children.arrow;
 
-                    var left = targetRect.left > window.innerWidth - targetRect.right;
+                    /*
+                    var leftPosition = targetRect.left > window.innerWidth - targetRect.right;
+                    var rightPosition = window.innerWidth - targetRect.right > targetRect.left;
+                    var topPosition = targetRect.top > window.innerHeight - targetRect.bottom;
+                    var bottomPosition = window.innerHeight - targetRect.bottom > targetRect.top;
+                    */
 
-                    // Align top with the target element
-                    dialog.style.top = targetRect.top - dialogMargin + 'px';
-                    if (left) {
+                    // Dialog location relative to the target
+                    switch(step.refPosition) {
+                        case "left":
+                            dialog.style.right = window.innerWidth - targetRect.left + 'px';
+                            dialog.dimensions.position = {v: 'top', h: 'right'};
+                            arrow.style.borderTop = "24px solid transparent";
+                            arrow.style.borderBottom = "24px solid transparent";
+                            arrow.style.borderLeft = "24px solid " + dialogBackgroundColor;
+                            arrow.style.borderRight = "none";
+                            arrow.style.right = "-22px";
+                            arrow.style.display = "block";
+                            break;
+                        case "right":
+                            dialog.style.left = targetRect.right + 'px';
+                            dialog.dimensions.position = {v: 'top', h: 'left'};
+                            arrow.style.borderTop = "24px solid transparent";
+                            arrow.style.borderBottom = "24px solid transparent";
+                            arrow.style.borderLeft = "none";
+                            arrow.style.borderRight = "24px solid " + dialogBackgroundColor;
+                            arrow.style.left = "-22px";
+                            arrow.style.display = "block";
+                            break;
+                        case "top":
+                            dialog.style.bottom = window.innerHeight - targetRect.top + 'px';
+                            dialog.dimensions.position = {v: 'bottom', h: 'left'};
+                            arrow.style.borderTop = "24px solid " + dialogBackgroundColor;
+                            arrow.style.borderBottom = "none";
+                            arrow.style.borderLeft = "24px solid transparent";
+                            arrow.style.borderRight = "24px solid transparent";
+                            arrow.style.bottom = "-22px";
+                            arrow.style.display = "block";
+                            break;
+                        case "bottom":
+                            dialog.style.top = targetRect.bottom + 'px';
+                            dialog.dimensions.position = {v: 'top', h: 'left'};
+                            arrow.style.borderTop = "none";
+                            arrow.style.borderBottom = "24px solid " + dialogBackgroundColor;
+                            arrow.style.borderLeft = "24px solid transparent";
+                            arrow.style.borderRight = "24px solid transparent";
+                            arrow.style.top = "-22px";
+                            arrow.style.display = "block";
+                            break;
+                    }
+
+                    // Dialog alignment relative to the target
+                    var topAlignment = targetRect.top - dialogMargin;
+                    var middleAlignment = (targetRect.top - dialogMargin) - (dialogHeight / 2) + (targetRect.height/2);
+                    var bottomAlignment = window.innerHeight - targetRect.bottom - dialogMargin;
+                    var leftAlignment = targetRect.left - dialogMargin;
+                    var centerAlignment = (targetRect.left - dialogMargin) - (dialogWidth / 2) + (targetRect.width/2);
+                    var rightAlignment = window.innerWidth - targetRect.right - dialogMargin;
+
+                    switch(step.refAlignment) {
+                        case "top":
+                            dialog.style.top = topAlignment + 'px';
+                            arrow.style.top =  (targetRect.height / 2) - 24 + "px";
+                            break;
+                        case "middle":
+                            dialog.style.top = middleAlignment + 'px';
+                            arrow.style.top =  (dialogHeight / 2) - 24 + "px";
+                            break;
+                        case "bottom":
+                            dialog.style.bottom = bottomAlignment + 'px';
+                            arrow.style.bottom =  (targetRect.height / 2) - 24 + "px";
+                            break;
+                        case "left":
+                            dialog.style.left = leftAlignment + 'px';
+                            arrow.style.left =  (targetRect.width / 2) - 24 + "px";
+                            break;
+                        case "center":
+                            dialog.style.left = centerAlignment + 'px';
+                            arrow.style.left =  (dialogWidth / 2) - 24 + "px";
+                            break;
+                        case "right":
+                            dialog.style.right = rightAlignment + 'px';
+                            arrow.style.right =  (targetRect.width / 2) - 24 + "px";
+                            break;
+                        default:
+                            dialog.style.top = topAlignment + 'px';
+                            arrow.style.top =  (targetRect.height / 2) - 24 + "px";
+                    }
+
+                    /*
+                    if (leftPosition) {
                         // Align left of the target element
                         dialog.style.right = window.innerWidth - targetRect.left + 'px';
                         dialog.dimensions.position = {v: 'top', h: 'right'};
@@ -250,6 +344,7 @@ of tutorial.
                         dialog.style.left = targetRect.right + 'px';
                         dialog.dimensions.position = {v: 'top', h: 'left'};
                     }
+                    */
                 }
             },
             // Closes all steps

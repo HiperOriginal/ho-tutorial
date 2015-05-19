@@ -12,6 +12,7 @@ html /deep/ #dialog /deep/ paper-shadow  {
 html /deep/ #dialog /deep/ #scroller {
     text-align: center;
     min-width: 260px;
+    max-height: 100%;
 }
 html /deep/ #dialog /deep/ #scroller h1 {
     font-size: 18px;
@@ -20,6 +21,16 @@ html /deep/ #dialog /deep/ #scroller h1 {
 html /deep/ #dialog /deep/ #actions {
     margin:0 auto;
     padding: 20px;
+}
+html /deep/ #dialog #arrow {
+    position: fixed;
+    display: none;
+    z-index: 11;
+    width: 0;
+    height: 0;
+    border-top: 24px solid transparent;
+    border-bottom: 24px solid transparent;
+    border-right: 24px solid white;
 }
 html /deep/ #dialog #close {
     position: absolute;

@@ -1,0 +1,11 @@
+html /deep/ .ho-backdrop {
+  position: fixed;
+  z-index: 500;
+  background-color: rgba(0,0,0,0.8);
+  transition: top 0.1s,
+              right 0.1s,
+              bottom 0.1s,
+              left 0.1s,
+              width 0.1s,
+              height 0.1s;
+}

@@ -42,7 +42,7 @@
         }
 
         #example1 {
-            background-color: red;
+            background-color: orange;
             border-radius: 150px;
         }
 
@@ -59,7 +59,7 @@
 </head>
 
 <body unresolved>
-    <template is="auto-binding" id="demo">
+    <template id="demo" is="auto-binding">
         <h1>Demo of ho-tutorial web component</h1>
 
         <button on-click="{{start}}">Start Demo Ho Tutorial</button>
@@ -70,62 +70,61 @@
             <div id="example3" class="example"></div>
         </div>
 
-        <ho-tutorial id="tutorial_1" config="{{tutorialConfig}}" stage="{{tutorialStage}}">
-            <ho-tutorial-step heading="Red spot" target="{{step1Target}}" backdropOffset="{{step1Offset}}">
+        <ho-tutorial id="tutorial_1" config="{{tutorial.config}}" >
+            <ho-tutorial-step heading="Red spot" targetSelector="#example1">
                 The component automatically highlights the target element and positions the dialog.
                 An offset could be configured around the target element to be more flexible in highlighting.
             </ho-tutorial-step>
 
-            <ho-tutorial-step heading="Green spot" targetSelector="#example2" backdrop="false">
+            <ho-tutorial-step heading="Green spot" targetSelector="#example2" refPosition="bottom" refAlignment="center">
                 <p>The backdrop could be easily disabled. By using the targetSelector attribute, the target element could be directly defined.</p>
             </ho-tutorial-step>
 
-            <ho-tutorial-step heading="Blue spot" target="{{step3Target}}" moreInfoAvailable on-info-request="{{showMoreInfo}}">
+            <ho-tutorial-step heading="Blue spot" targetSelector="#example3" moreInfoAvailable on-info-request="{{showMoreInfo}}" refPosition="left" refAlignment="middle">
                 <p>Now the dialog moved to the left side of the target, because there is more room available.</p>
             </ho-tutorial-step>
 
-            <ho-tutorial-step heading="Final step">
+            <ho-tutorial-step heading="Final step" backdrop="false">
                 <p>
                     This step is configured without a target. Because it is the last step,
                     the button text at the bottom right changed to 'Finish'.
                 </p>
             </ho-tutorial-step>
         </ho-tutorial>
-
     </template>
 
     <script type="text/javascript">
-        (function(window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function(){
             var demo = document.querySelector('#demo');
-
-            demo.start = function() {
-                demo.tutorialConfig = {};
-                demo.tutorialConfig.texts = {
-                    next: 'Próximo',
-                    back: 'Anterior',
-                    abort: 'Parar',
-                    finish: 'Concluir',
-                    moreInfo: 'Ver Mais',
-                    of: 'de',
-                    step:'Passo'
-                }
-                //demo.tutorialStage = document.querySelector('.container');
-                demo.step1Target = document.querySelector('#example1');
-                demo.step1Offset = {left: 2, right: 2, top: 2, bottom: 2};
-                demo.step3Target = document.querySelector('#example3');
-
-                var tutorial = document.querySelector('#tutorial_1');
-                tutorial.start();
-            };
-
-            demo.showMoreInfo = function() {
-                window.open('http://webcomponents.org/', '_blank');
-            };
-
-            demo.log = function(info) {
-                console.log(info);
-            };
-        })(window, document);
+            demo.addEventListener('template-bound', function() {
+                this.initialize();
+                //this.tutorial.start();
+            });
+            demo.initialize = function(){
+                this.tutorial = {
+                    element: document.querySelector('#tutorial_1'),
+                    stage: document.querySelector('.container'),
+                    config: {
+                        texts: {
+                            next: 'próximo',
+                            back: 'anterior',
+                            abort: 'parar',
+                            finish: 'concluir',
+                            moreInfo: 'ver mais',
+                            of: 'de',
+                            step: 'passo'
+                        }
+                    }
+                };
+                this.start = function(){
+                    this.tutorial.element.start();
+                    console.log(this);
+                };
+                this.showMoreInfo = function(){
+                    window.open('http://webcomponents.org/', '_blank');
+                };
+            }
+        });
     </script>
 </body>
 </html>

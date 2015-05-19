@@ -24,7 +24,11 @@ content presented in the dialog that is shown when the step is activated.
 
     <!-- Default Template -->
     <template>
+
         <paper-action-dialog transition="core-transition-center" heading="{{heading}}" id="dialog" class="default-template" autoCloseDisabled>
+            <!-- arrow -->
+            <div id="arrow"></div>
+
             <!-- close -->
             <core-icon-button id="close" icon="close" on-click="{{_abort}}" ></core-icon-button>
 
@@ -62,6 +66,7 @@ content presented in the dialog that is shown when the step is activated.
                 </paper-button>
             </template>
         </paper-action-dialog>
+
     </template>
 
     <script>
@@ -173,6 +178,28 @@ content presented in the dialog that is shown when the step is activated.
                  * @default {...}
                  */
                 backdropOffset: {top: 0, right: 0, bottom: 0, left: 0},
+
+                /**
+                 * Defines the position of the dialog
+                 * for the current step according the target.
+                 *
+                 * @attribute refPosition
+                 * @type string
+                 * @values "right, left, top, bottom"
+                 * @default right
+                 */
+                refPosition: "right",
+
+                /**
+                 * Defines the alignment of the dialog
+                 * for the current step according the target.
+                 *
+                 * @attribute refAlignment
+                 * @type string
+                 * @values "top, middle, bottom, left, center, right"
+                 * @default top
+                 */
+                refAlignment: "top",
 
                 /**
                  * If this step is the first step. Changes

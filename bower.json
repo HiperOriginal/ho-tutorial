@@ -1,6 +1,6 @@
 {
   "name": "ho-tutorial",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/HiperOriginal/ho-tutorial",
   "authors": [
     "Leo Batista <leobatista021@gmail.com>"
@@ -22,11 +22,11 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "~0.5.5",
-    "core-icons": "core-icons#~0.5.5",
-    "core-icon-button": "core-icon-button#~0.5.5",
-    "paper-dialog": "paper-dialog#~0.5.5",
-    "paper-button": "paper-button#~0.5.5",
+    "polymer": "Polymer/polymer#~0.5.5",
+    "core-icons": "Polymer/core-icons#~0.5.5",
+    "core-icon-button": "Polymer/core-icon-button#~0.5.5",
+    "paper-dialog": "Polymer/paper-dialog#~0.5.5",
+    "paper-button": "Polymer/paper-button#~0.5.5",
 
     "dynamic-backdrop": "~1.2.2"
   },
