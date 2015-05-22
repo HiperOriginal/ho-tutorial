@@ -77,14 +77,91 @@ sub-part of a specific area on the website.
          */
         visible: true
       },
+
+      /**
+      * The `update-backdrop` event is fired...
+      *
+      * @event update-backdrop
+      */
+      _updateBackdrop: function(event) {
+          this.fire('update-backdrop');
+      },
+
       ready: function() {
         this.targetChanged();
+          var that = this; //important!
+
+          window.addEventListener("resize", function() {
+              if(that.visible) {
+                  that._calcLazyBackdrop();
+              }
+          });
       },
       _createBackdropElement: function(target) {
         var elem = document.createElement('div');
         elem.className = 'ho-backdrop';
         target.appendChild(elem);
         return elem;
+      },
+      _calcBackdrop: function (){
+          //console.log(this.stage);
+          var stageRect = this.stage.getBoundingClientRect();
+          var targetRect;
+          if (this.target) {
+              targetRect = this.target.getBoundingClientRect();
+          } else {
+              // Calculate center of current target area
+              var vertCenter = Math.ceil(
+                      (parseFloat(this.bottom.style.top) +
+                      parseFloat(this.top.style.top) +
+                      parseFloat(this.top.style.height)) / 2
+              );
+              var horzCenter = Math.ceil(
+                      (parseFloat(this.right.style.left) +
+                      parseFloat(this.left.style.left) +
+                      parseFloat(this.left.style.width)) / 2
+              );
+
+              targetRect = {
+                  top: vertCenter ? vertCenter : 0,
+                  right: horzCenter ? horzCenter : 0,
+                  bottom: vertCenter,
+                  left: horzCenter,
+                  width: 0,
+                  height: 0
+              }
+          }
+
+          // Create four backdrops around the target area
+          this.top.style.top = stageRect.top + 'px';
+          this.top.style.right =  window.innerWidth - stageRect.right + 'px';
+          this.top.style.bottom = 'initial';
+          this.top.style.height = targetRect.top - stageRect.top - this.offset.top + 'px';
+          this.top.style.left = stageRect.left + 'px';
+
+          this.right.style.top = targetRect.top - this.offset.top + 'px';
+          this.right.style.right = window.innerWidth - stageRect.right + 'px';
+          this.right.style.bottom = window.innerHeight - stageRect.bottom + 'px';
+          this.right.style.left = targetRect.right + this.offset.right + 'px';
+
+          this.bottom.style.top = targetRect.bottom + this.offset.bottom + 'px';
+          this.bottom.style.right = 'initial';
+          this.bottom.style.width = targetRect.width + this.offset.left + this.offset.right + 'px';
+          this.bottom.style.bottom = window.innerHeight - stageRect.bottom + 'px';
+          this.bottom.style.left = targetRect.left - this.offset.left + 'px';
+
+          this.left.style.top = targetRect.top - this.offset.top + 'px';
+          this.left.style.right = 'initial';
+          this.left.style.width = targetRect.left - stageRect.left - this.offset.left + 'px';
+          this.left.style.bottom = window.innerHeight - stageRect.bottom + 'px';
+          this.left.style.left = stageRect.left + 'px';
+
+          this._updateBackdrop();
+      },
+      _calcLazyBackdrop: function () {
+          this.job('calc-backdrop', function() {
+              this._calcBackdrop();
+          }, 100);
       },
       targetChanged: function(oldTarget, newTarget) {
         if (this.visible) {
@@ -93,57 +170,7 @@ sub-part of a specific area on the website.
           this._resetBackdrop();
           return;
         }
-
-        var stageRect = this.stage.getBoundingClientRect();
-        var targetRect;
-        if (this.target) {
-          targetRect = this.target.getBoundingClientRect();
-        } else {
-          // Calculate center of current target area
-          var vertCenter = Math.ceil(
-            (parseFloat(this.bottom.style.top) +
-             parseFloat(this.top.style.top) +
-             parseFloat(this.top.style.height)) / 2
-          );
-          var horzCenter = Math.ceil(
-            (parseFloat(this.right.style.left) +
-             parseFloat(this.left.style.left) +
-             parseFloat(this.left.style.width)) / 2
-          );
-
-          targetRect = {
-            top: vertCenter ? vertCenter : 0,
-            right: horzCenter ? horzCenter : 0,
-            bottom: vertCenter,
-            left: horzCenter,
-            width: 0,
-            height: 0
-          }
-        }
-
-        // Create four backdrops around the target area
-        this.top.style.top = stageRect.top + 'px';
-        this.top.style.right =  window.innerWidth - stageRect.right + 'px';
-        this.top.style.bottom = 'initial';
-        this.top.style.height = targetRect.top - stageRect.top - this.offset.top + 'px';
-        this.top.style.left = stageRect.left + 'px';
-
-        this.right.style.top = targetRect.top - this.offset.top + 'px';
-        this.right.style.right = window.innerWidth - stageRect.right + 'px';
-        this.right.style.bottom = window.innerHeight - stageRect.bottom + 'px';
-        this.right.style.left = targetRect.right + this.offset.right + 'px';
-
-        this.bottom.style.top = targetRect.bottom + this.offset.bottom + 'px';
-        this.bottom.style.right = 'initial';
-        this.bottom.style.width = targetRect.width + this.offset.left + this.offset.right + 'px';
-        this.bottom.style.bottom = window.innerHeight - stageRect.bottom + 'px';
-        this.bottom.style.left = targetRect.left - this.offset.left + 'px';
-
-        this.left.style.top = targetRect.top - this.offset.top + 'px';
-        this.left.style.right = 'initial';
-        this.left.style.width = targetRect.left - stageRect.left - this.offset.left + 'px';
-        this.left.style.bottom = window.innerHeight - stageRect.bottom + 'px';
-        this.left.style.left = stageRect.left + 'px';
+        this._calcBackdrop();
       },
       stageChanged: function() {
         this.targetChanged();

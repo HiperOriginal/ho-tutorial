@@ -107,3 +107,7 @@ html /deep/ #dialog paper-button.colored.gray:hover {
     background-color: #656b70;
     border-color: #656b70;
 }
+.disable-scroll {
+    height: 100%;
+    overflow: hidden;
+}

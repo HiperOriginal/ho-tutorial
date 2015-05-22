@@ -23,7 +23,7 @@ element page to see how it is implemented at tutorial.
     </ho-tutorial>
 
 @element ho-tutorial
-@version 0.1.6
+@version 0.1.7
 @blurb Displays a floating step by step tutorial linked to interface elements.
 @status alpha
 @homepage http://hiperoriginal.github.io/components/ho-tutorial
@@ -113,9 +113,11 @@ element page to see how it is implemented at tutorial.
                  * @default document.body
                  */
                 stage: document.body
-
             },
             lastTimeStamp: 0,
+
+            dialog: null,
+            target: null,
 
             ready: function() {
                 this._initialize();
@@ -131,6 +133,7 @@ element page to see how it is implemented at tutorial.
              */
             start: function() {
                 this.abort();
+                this._addClass(document.body, "disable-scroll");
                 this._update();
                 this.next();
             },
@@ -152,29 +155,24 @@ element page to see how it is implemented at tutorial.
 
                 // Increments currentIndex
                 this.currentIndex += 1;
-                //console.log("currentIndex: " + this.currentIndex);
 
                 // Opens new step
                 if (this.currentIndex < this.children.length) {
-                    var nextStep = this.children[this.currentIndex]; //associates to equivalent child at the flow
-                    nextStep.firstStep = this.currentIndex == 0; //sets true if step to show is the first step at the flow
-                    nextStep.lastStep = this.currentIndex + 1 == this.children.length; //sets true if step to show is the first step at the flow
+                    var newStep = this.children[this.currentIndex]; //associates to equivalent child at the flow
+                    newStep.firstStep = this.currentIndex == 0; //sets true if step to show is the first step at the flow
+                    newStep.lastStep = this.currentIndex + 1 == this.children.length; //sets true if step to show is the first step at the flow
 
-                    nextStep.open();
-                    //console.log(this.currentIndex);
+                    newStep.open();
 
-                    this.backdropVisible = nextStep.backdrop;
-                    this.currentTarget = nextStep.target;
-                    this.backdropOffset = nextStep.backdropOffset;
                 } else {
                     this.abort();
                 }
 
                 // Closes old step
                 if (this.currentIndex > 0 && this.currentIndex < this.children.length) {
-                    var stepToClose = this.children[this.currentIndex-1]
+                    var oldStep = this.children[this.currentIndex-1];
                     setTimeout(function () {
-                        stepToClose.close();
+                        oldStep.close();
                     }, 50);
                 }
             },
@@ -196,7 +194,6 @@ element page to see how it is implemented at tutorial.
 
                 // Decrements currentIndex
                 this.currentIndex -= 1;
-                //console.log("currentIndex: " + this.currentIndex);
 
                 // Opens new step
                 if (this.currentIndex < this.children.length && this.currentIndex>= 0) {
@@ -206,16 +203,13 @@ element page to see how it is implemented at tutorial.
 
                     newStep.open();
 
-                    this.backdropVisible = newStep.backdrop;
-                    this.currentTarget = newStep.target;
-                    this.backdropOffset = newStep.backdropOffset;
                 } else {
                     this.abort();
                 }
 
                 // Closes old step
                 if (this.currentIndex >= 0 && this.currentIndex < this.children.length-1) {
-                    var oldStep = this.children[this.currentIndex + 1]
+                    var oldStep = this.children[this.currentIndex + 1];
                     setTimeout(function () {
                         oldStep.close();
                     }, 50);
@@ -231,15 +225,23 @@ element page to see how it is implemented at tutorial.
             abort: function(event) {
                 this._closeAll();
                 this._reset();
+                this._removeClass(document.body, "disable-scroll");
             },
+            // Updates dialog box
             _layoutDialog: function(event) {
-                if (this.alignDialogs && event.target.target) {
-                    var dialog = event.detail.target;
+                // Gets the dialog and target references
+                if (event.type == "core-overlay-position") {
+                    this.dialog = event.detail.target;
+                    this.target = event.target.target;
+                }
+                // Calculates the dialog according the target
+                if (this.alignDialogs  && this.target != null) {
+                    var dialog = this.dialog;
                     var dialogMargin = parseFloat(window.getComputedStyle(dialog).marginTop);
                     var dialogWidth = parseFloat(window.getComputedStyle(dialog).width);
                     var dialogHeight = parseFloat(window.getComputedStyle(dialog).height);
                     var dialogBackgroundColor = window.getComputedStyle(dialog).backgroundColor;
-                    var targetRect = event.target.target.getBoundingClientRect();
+                    var targetRect = this.target.getBoundingClientRect();
                     var targetMiddle = targetRect.bottom - (targetRect.height / 2);
                     var targetCenter = targetRect.right - (targetRect.width / 2);
                     var step = this.children[this.currentIndex];
@@ -345,7 +347,15 @@ element page to see how it is implemented at tutorial.
                         dialog.dimensions.position = {v: 'top', h: 'left'};
                     }
                     */
+
                 }
+            },
+            // Creates backdrop
+            _newBackdrop: function() {
+                var newStep = this.children[this.currentIndex]; //associates to equivalent child at the flow
+                this.backdropVisible = newStep.backdrop;
+                this.currentTarget = newStep.target;
+                this.backdropOffset = newStep.backdropOffset;
             },
             // Closes all steps
             _closeAll: function() {
@@ -377,6 +387,8 @@ element page to see how it is implemented at tutorial.
                 this.addEventListener('back', this.back.bind(this));
                 this.addEventListener('abort', this.abort.bind(this));
                 this.addEventListener('info-request', this.back.bind(this));
+                this.addEventListener('new-backdrop', this._newBackdrop.bind(this));
+                this.addEventListener('update-backdrop', this._layoutDialog.bind(this));
                 this.addEventListener('core-overlay-position', this._layoutDialog.bind(this));
                 this.addEventListener('core-overlay-close-completed', this._log.bind(this));
             },
@@ -385,9 +397,22 @@ element page to see how it is implemented at tutorial.
                 this._registerSteps();
                 this.onMutation(this, this._update); //watches component changes
             },
+            _hasClass: function(element, className) {
+                return !!element.className.match(new RegExp('(\\s|^)'+className+'(\\s|$)'));
+            },
+            _addClass: function(element, className) {
+                if(!this._hasClass(element, className)) element.className += " "+className;
+            },
+            _removeClass: function(element, className) {
+                if (this._hasClass(element, className)) {
+                    var reg = new RegExp('(\\s|^)'+className+'(\\s|$)');
+                    element.className=element.className.replace(reg,' ');
+                }
+            },
             // temp (delete)
             _log: function(){
                 //console.log("core-overlay-close-completed");
+                //console.log("update-backdrop");
             }
         });
     </script>

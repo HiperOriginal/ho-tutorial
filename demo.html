@@ -42,7 +42,7 @@
         }
 
         #example1 {
-            background-color: orange;
+            background-color: red;
             border-radius: 150px;
         }
 
@@ -71,7 +71,7 @@
         </div>
 
         <ho-tutorial id="tutorial_1" config="{{tutorial.config}}" >
-            <ho-tutorial-step heading="Red spot" targetSelector="#example1">
+            <ho-tutorial-step heading="Red spot" targetSelector="#example1" on-enter="{{log}}" on-exit="{{log}}">
                 The component automatically highlights the target element and positions the dialog.
                 An offset could be configured around the target element to be more flexible in highlighting.
             </ho-tutorial-step>
@@ -118,13 +118,16 @@
                 };
                 this.start = function(){
                     this.tutorial.element.start();
-                    console.log(this);
                 };
                 this.showMoreInfo = function(){
                     window.open('http://webcomponents.org/', '_blank');
                 };
+                this.log = function(e){
+                    console.log("Type of triggered event: " + e.type);
+                }
             }
         });
+
     </script>
 </body>
 </html>

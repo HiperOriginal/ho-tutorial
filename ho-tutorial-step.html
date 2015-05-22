@@ -228,13 +228,17 @@ content presented in the dialog that is shown when the step is activated.
                 lastStep: false
             },
             open: function() {
-                this.$.dialog.open();
-                //console.log(this.$.dialog);
-
+                this._enter();
+                this.job('open', function() {
+                    this._newBackdrop();
+                    this.$.dialog.open();
+                }, 10);
             },
             close: function() {
-                this.$.dialog.close();
-                //console.log(this.$.dialog);
+                this._exit();
+                this.job('close', function() {
+                    this.$.dialog.close();
+                }, 10);
             },
 
             /**
@@ -244,7 +248,7 @@ content presented in the dialog that is shown when the step is activated.
              * @event info-request
              */
             _infoRequest: function(event) {
-                this.fire('info-request', {index: this.index});
+                this.fire('info-request');
             },
 
             /**
@@ -254,7 +258,7 @@ content presented in the dialog that is shown when the step is activated.
              * @event abort
              */
             _abort: function(event) {
-                this.fire('abort', {index: this.index});
+                this.fire('abort');
             },
 
             /**
@@ -264,7 +268,7 @@ content presented in the dialog that is shown when the step is activated.
              * @event next
              */
             _next: function(event) {
-                this.fire('next', {index: this.index}); // fire(type, detail, targetNode, bubbles?, cancelable?)
+                this.fire('next'); // fire(type, detail, targetNode, bubbles?, cancelable?)
             },
 
             /**
@@ -274,7 +278,37 @@ content presented in the dialog that is shown when the step is activated.
              * @event back
              */
             _back: function(event) {
-                this.fire('back', {index: this.index});
+                this.fire('back');
+            },
+
+            /**
+             * The `enter` event is fired just before
+             * the opening step.
+             *
+             * @event enter
+             */
+            _enter: function(event) {
+                this.fire('enter');
+            },
+
+            /**
+             * The `exit` event is fired just before
+             * the closing step.
+             *
+             * @event exit
+             */
+            _exit: function(event) {
+                this.fire('exit');
+            },
+
+            /**
+             * The `new-backdrop` event is fired whenever the
+             * tutorial opens a step.
+             *
+             * @event new-backdrop
+             */
+            _newBackdrop: function(event) {
+                this.fire('new-backdrop');
             },
 
             targetSelectorChanged: function() {
