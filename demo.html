@@ -70,7 +70,7 @@
             <div id="example3" class="example"></div>
         </div>
 
-        <ho-tutorial id="tutorial_1" config="{{tutorial.config}}" >
+        <ho-tutorial id="tutorial_1" config="{{tutorial.config}}" startFrom="{{lastViewedStep + 1}}">
             <ho-tutorial-step heading="Red spot" targetSelector="#example1" on-enter="{{log}}" on-exit="{{log}}">
                 The component automatically highlights the target element and positions the dialog.
                 An offset could be configured around the target element to be more flexible in highlighting.
@@ -124,7 +124,8 @@
                 };
                 this.log = function(e){
                     console.log("Type of triggered event: " + e.type);
-                }
+                };
+                this.lastViewedStep = 2;
             }
         });
 

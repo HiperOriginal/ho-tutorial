@@ -1,6 +1,6 @@
 {
   "name": "ho-tutorial",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "homepage": "https://github.com/HiperOriginal/ho-tutorial",
   "authors": [
     "Leo Batista <leobatista021@gmail.com>"
@@ -26,9 +26,7 @@
     "core-icons": "Polymer/core-icons#~0.5.5",
     "core-icon-button": "Polymer/core-icon-button#~0.5.5",
     "paper-dialog": "Polymer/paper-dialog#~0.5.5",
-    "paper-button": "Polymer/paper-button#~0.5.5",
-
-    "dynamic-backdrop": "~1.2.2"
+    "paper-button": "Polymer/paper-button#~0.5.5"
   },
   "devDependencies": {
     "web-component-tester": "*"

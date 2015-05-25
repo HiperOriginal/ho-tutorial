@@ -23,7 +23,7 @@ element page to see how it is implemented at tutorial.
     </ho-tutorial>
 
 @element ho-tutorial
-@version 0.1.7
+@version 0.1.8
 @blurb Displays a floating step by step tutorial linked to interface elements.
 @status alpha
 @homepage http://hiperoriginal.github.io/components/ho-tutorial
@@ -102,6 +102,15 @@ element page to see how it is implemented at tutorial.
                  * @default 0
                  */
                 stepsTotal: 0,
+
+                /**
+                 * The step which starts the tutorial.
+                 *
+                 * @attribute startFrom
+                 * @type Number
+                 * @default 1
+                 */
+                startFrom: 1,
 
                 /**
                  * The element the tutorial should be presented in.
@@ -259,41 +268,41 @@ element page to see how it is implemented at tutorial.
                         case "left":
                             dialog.style.right = window.innerWidth - targetRect.left + 'px';
                             dialog.dimensions.position = {v: 'top', h: 'right'};
-                            arrow.style.borderTop = "24px solid transparent";
-                            arrow.style.borderBottom = "24px solid transparent";
-                            arrow.style.borderLeft = "24px solid " + dialogBackgroundColor;
+                            arrow.style.borderTop = "18px solid transparent";
+                            arrow.style.borderBottom = "18px solid transparent";
+                            arrow.style.borderLeft = "16px solid " + dialogBackgroundColor;
                             arrow.style.borderRight = "none";
-                            arrow.style.right = "-22px";
+                            arrow.style.right = "-16px";
                             arrow.style.display = "block";
                             break;
                         case "right":
                             dialog.style.left = targetRect.right + 'px';
                             dialog.dimensions.position = {v: 'top', h: 'left'};
-                            arrow.style.borderTop = "24px solid transparent";
-                            arrow.style.borderBottom = "24px solid transparent";
+                            arrow.style.borderTop = "18px solid transparent";
+                            arrow.style.borderBottom = "18px solid transparent";
                             arrow.style.borderLeft = "none";
-                            arrow.style.borderRight = "24px solid " + dialogBackgroundColor;
-                            arrow.style.left = "-22px";
+                            arrow.style.borderRight = "16px solid " + dialogBackgroundColor;
+                            arrow.style.left = "-16px";
                             arrow.style.display = "block";
                             break;
                         case "top":
                             dialog.style.bottom = window.innerHeight - targetRect.top + 'px';
                             dialog.dimensions.position = {v: 'bottom', h: 'left'};
-                            arrow.style.borderTop = "24px solid " + dialogBackgroundColor;
+                            arrow.style.borderTop = "16px solid " + dialogBackgroundColor;
                             arrow.style.borderBottom = "none";
-                            arrow.style.borderLeft = "24px solid transparent";
-                            arrow.style.borderRight = "24px solid transparent";
-                            arrow.style.bottom = "-22px";
+                            arrow.style.borderLeft = "18px solid transparent";
+                            arrow.style.borderRight = "18px solid transparent";
+                            arrow.style.bottom = "-16px";
                             arrow.style.display = "block";
                             break;
                         case "bottom":
                             dialog.style.top = targetRect.bottom + 'px';
                             dialog.dimensions.position = {v: 'top', h: 'left'};
                             arrow.style.borderTop = "none";
-                            arrow.style.borderBottom = "24px solid " + dialogBackgroundColor;
-                            arrow.style.borderLeft = "24px solid transparent";
-                            arrow.style.borderRight = "24px solid transparent";
-                            arrow.style.top = "-22px";
+                            arrow.style.borderBottom = "16px solid " + dialogBackgroundColor;
+                            arrow.style.borderLeft = "18px solid transparent";
+                            arrow.style.borderRight = "18px solid transparent";
+                            arrow.style.top = "-16px";
                             arrow.style.display = "block";
                             break;
                     }
@@ -309,31 +318,31 @@ element page to see how it is implemented at tutorial.
                     switch(step.refAlignment) {
                         case "top":
                             dialog.style.top = topAlignment + 'px';
-                            arrow.style.top =  (targetRect.height / 2) - 24 + "px";
+                            arrow.style.top =  (targetRect.height / 2) - 18 + "px";
                             break;
                         case "middle":
                             dialog.style.top = middleAlignment + 'px';
-                            arrow.style.top =  (dialogHeight / 2) - 24 + "px";
+                            arrow.style.top =  (dialogHeight / 2) - 18 + "px";
                             break;
                         case "bottom":
                             dialog.style.bottom = bottomAlignment + 'px';
-                            arrow.style.bottom =  (targetRect.height / 2) - 24 + "px";
+                            arrow.style.bottom =  (targetRect.height / 2) - 18 + "px";
                             break;
                         case "left":
                             dialog.style.left = leftAlignment + 'px';
-                            arrow.style.left =  (targetRect.width / 2) - 24 + "px";
+                            arrow.style.left =  (targetRect.width / 2) - 18 + "px";
                             break;
                         case "center":
                             dialog.style.left = centerAlignment + 'px';
-                            arrow.style.left =  (dialogWidth / 2) - 24 + "px";
+                            arrow.style.left =  (dialogWidth / 2) - 18 + "px";
                             break;
                         case "right":
                             dialog.style.right = rightAlignment + 'px';
-                            arrow.style.right =  (targetRect.width / 2) - 24 + "px";
+                            arrow.style.right =  (targetRect.width / 2) - 18 + "px";
                             break;
                         default:
                             dialog.style.top = topAlignment + 'px';
-                            arrow.style.top =  (targetRect.height / 2) - 24 + "px";
+                            arrow.style.top =  (targetRect.height / 2) - 18 + "px";
                     }
 
                     /*
@@ -367,7 +376,7 @@ element page to see how it is implemented at tutorial.
             // Resets tutorial
             _reset: function() {
                 this.currentTarget = null;
-                this.currentIndex = -1;
+                this.currentIndex = this.startFrom - 2;
                 this.backdropVisible = false;
             },
             // Registers all steps in tutorial
