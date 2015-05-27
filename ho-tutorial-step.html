@@ -16,6 +16,7 @@ content presented in the dialog that is shown when the step is activated.
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../core-icons/core-icons.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../core-media-query/core-media-query.html">
 
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700">
 <link rel="stylesheet" href="ho-tutorial.css" shim-shadowdom>
@@ -24,11 +25,11 @@ content presented in the dialog that is shown when the step is activated.
 
     <!-- Default Template -->
     <template>
-
-        <paper-action-dialog transition="core-transition-center" heading="{{heading}}" id="dialog" class="default-template" autoCloseDisabled>
+        <core-media-query query="{{query}}" queryMatches="{{queryMatches}}"></core-media-query>
+        <paper-action-dialog transition="core-transition-center" heading="{{heading}}" id="dialog" class="default-template is-active-{{isActive}}" autoCloseDisabled>
             <!-- arrow -->
             <div id="arrow"></div>
-            
+
             <!-- close -->
             <core-icon-button id="close" icon="close" on-click="{{_abort}}" ></core-icon-button>
 
@@ -66,7 +67,6 @@ content presented in the dialog that is shown when the step is activated.
                 </paper-button>
             </template>
         </paper-action-dialog>
-
     </template>
 
     <script>
@@ -225,7 +225,46 @@ content presented in the dialog that is shown when the step is activated.
                  * @type boolean
                  * @default false
                  */
-                lastStep: false
+                lastStep: false,
+
+                /**
+                 * ...
+                 * ...
+                 *
+                 * @attribute query
+                 * @type string
+                 * @default null
+                 */
+                query: {
+                    value: null,
+                    reflect: true
+                },
+
+                /**
+                 * ...
+                 * ...
+                 *
+                 * @attribute queryMatches
+                 * @type string
+                 * @default null
+                 */
+                queryMatches: {
+                    value: null,
+                    reflect: true
+                },
+
+                /**
+                 * ...
+                 * ...
+                 *
+                 * @attribute isActive
+                 * @type boolean
+                 * @default true
+                 */
+                isActive: {
+                    value: true,
+                    reflect: true
+                }
             },
             open: function() {
                 this._enter();
