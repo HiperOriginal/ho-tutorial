@@ -129,8 +129,16 @@ element page to see how it is implemented at tutorial.
             target: null,
 
             ready: function() {
-                this._initialize();
-                //this._update();
+                this._reset();
+                this.addEventListener('next', function(e){this.next(e)}); // , function(e){this.next(e)}
+                this.addEventListener('back', function(e){this.back(e)});
+                this.addEventListener('abort', function(e){this.abort(e)});
+                this.addEventListener('info-request', function(e){this._log(e)});
+                this.addEventListener('new-backdrop', function(){this._newBackdrop()});
+                this.addEventListener('update-backdrop', function(e){this._layoutDialog(e)});
+                this.addEventListener('core-overlay-position', function(e){this._layoutDialog(e)});
+                this.addEventListener('core-overlay-close-completed', function(e){this._log(e)});
+                this.addEventListener('core-media-change', function(e){this._update(e)});
             },
 
             /**
@@ -141,7 +149,7 @@ element page to see how it is implemented at tutorial.
              * @method start
              */
             start: function() {
-                this.abort();
+                this._reset();
                 this._addClass(document.body, "disable-scroll");
                 this._update();
                 this.next();
@@ -171,6 +179,7 @@ element page to see how it is implemented at tutorial.
                     newStep.firstStep = this.currentIndex == 0; //sets true if step to show is the first step at the flow
                     newStep.lastStep = this.currentIndex + 1 == this._validSteps.length; //sets true if step to show is the first step at the flow
 
+                    console.log(newStep);
                     newStep.open();
 
                 } else {
@@ -181,6 +190,7 @@ element page to see how it is implemented at tutorial.
                 if (this.currentIndex > 0 && this.currentIndex < this._validSteps.length) {
                     var oldStep = this._validSteps[this.currentIndex-1];
                     setTimeout(function () {
+                        console.log(oldStep);
                         oldStep.close();
                     }, 50);
                 }
@@ -246,9 +256,11 @@ element page to see how it is implemented at tutorial.
                 if (event.type == "core-overlay-position") {
                     this.dialog = event.detail.target;
                     this.target = event.target.target;
+                    console.log(event.type);
                 }
+
                 // Calculates the dialog according the target
-                if (this.alignDialogs  && this.target != null) {
+                if (this.alignDialogs && this.target != null) {
                     var dialog = this.dialog;
                     var dialogMargin = parseFloat(window.getComputedStyle(dialog).marginTop);
                     var dialogWidth = parseFloat(window.getComputedStyle(dialog).width);
@@ -268,7 +280,8 @@ element page to see how it is implemented at tutorial.
                     */
 
                     // Dialog location relative to the target
-                    switch(step.refPosition) {
+                    switch(step.
+                            refPosition) {
                         case "left":
                             dialog.style.right = window.innerWidth - targetRect.left + 'px';
                             dialog.dimensions.position = {v: 'top', h: 'right'};
@@ -313,42 +326,41 @@ element page to see how it is implemented at tutorial.
 
                     // Dialog alignment relative to the target
                     var topAlignment = targetRect.top - dialogMargin;
-                    var middleAlignment = (targetRect.top - dialogMargin) - (dialogHeight / 2) + (targetRect.height/2);
+                    var middleAlignment = (targetRect.top - dialogMargin) - (dialogHeight / 2) + (targetRect.height /2);
                     var bottomAlignment = window.innerHeight - targetRect.bottom - dialogMargin;
                     var leftAlignment = targetRect.left - dialogMargin;
-                    var centerAlignment = (targetRect.left - dialogMargin) - (dialogWidth / 2) + (targetRect.width/2);
+                    var centerAlignment = (targetRect.left - dialogMargin) - (dialogWidth / 2) + (targetRect.width /2);
                     var rightAlignment = window.innerWidth - targetRect.right - dialogMargin;
 
                     switch(step.refAlignment) {
-                        case "top":
-                            dialog.style.top = topAlignment + 'px';
-                            arrow.style.top =  (targetRect.height / 2) - 18 + "px";
-                            break;
-                        case "middle":
-                            dialog.style.top = middleAlignment + 'px';
-                            arrow.style.top =  (dialogHeight / 2) - 18 + "px";
-                            break;
-                        case "bottom":
-                            dialog.style.bottom = bottomAlignment + 'px';
-                            arrow.style.bottom =  (targetRect.height / 2) - 18 + "px";
-                            break;
-                        case "left":
-                            dialog.style.left = leftAlignment + 'px';
-                            arrow.style.left =  (targetRect.width / 2) - 18 + "px";
-                            break;
-                        case "center":
-                            dialog.style.left = centerAlignment + 'px';
-                            arrow.style.left =  (dialogWidth / 2) - 18 + "px";
-                            break;
-                        case "right":
-                            dialog.style.right = rightAlignment + 'px';
-                            arrow.style.right =  (targetRect.width / 2) - 18 + "px";
-                            break;
-                        default:
-                            dialog.style.top = topAlignment + 'px';
-                            arrow.style.top =  (targetRect.height / 2) - 18 + "px";
+                    case "top":
+                        dialog.style.top = topAlignment + 'px';
+                        arrow.style.top =  (targetRect.height / 2) - 18 + "px";
+                        break;
+                    case "middle":
+                        dialog.style.top = middleAlignment + 'px';
+                        arrow.style.top =  (dialogHeight / 2) - 18 + "px";
+                        break;
+                    case "bottom":
+                        dialog.style.bottom = bottomAlignment + 'px';
+                        arrow.style.bottom =  (targetRect.height / 2) - 18 + "px";
+                        break;
+                    case "left":
+                        dialog.style.left = leftAlignment + 'px';
+                        arrow.style.left =  (targetRect.width / 2) - 18 + "px";
+                        break;
+                    case "center":
+                        dialog.style.left = centerAlignment + 'px';
+                        arrow.style.left =  (dialogWidth / 2) - 18 + "px";
+                        break;
+                    case "right":
+                        dialog.style.right = rightAlignment + 'px';
+                        arrow.style.right =  (targetRect.width / 2) - 18 + "px";
+                        break;
+                    default:
+                        dialog.style.top = topAlignment + 'px';
+                        arrow.style.top =  (targetRect.height / 2) - 18 + "px";
                     }
-
                     /*
                     if (leftPosition) {
                         // Align left of the target element
@@ -360,9 +372,7 @@ element page to see how it is implemented at tutorial.
                         dialog.dimensions.position = {v: 'top', h: 'left'};
                     }
                     */
-
                 }
-                console.log("LAYOUT DIALOG FEITO!!!!");
             },
             // Creates backdrop
             _newBackdrop: function() {
@@ -382,15 +392,8 @@ element page to see how it is implemented at tutorial.
                 this.currentTarget = null;
                 this.currentIndex = this.startFrom - 2;
                 this.backdropVisible = false;
-                this.removeEventListener('next'); // , function(e){this.next(e)}
-                this.removeEventListener('back');
-                this.removeEventListener('abort');
-                this.removeEventListener('info-request');
-                this.removeEventListener('new-backdrop');
-                this.removeEventListener('update-backdrop');
-                this.removeEventListener('core-overlay-position');
-                this.removeEventListener('core-overlay-close-completed');
-                this.removeEventListener('core-media-change');
+                this.dialog = null;
+                this.target = null;
             },
             // Registers all steps in tutorial
             _registerSteps: function() {
@@ -401,31 +404,17 @@ element page to see how it is implemented at tutorial.
                     }
                 }
                 for (var i = 0; i < this._validSteps.length; i++) {
-                    console.log(this._validSteps);
                     this._validSteps[i].config = this.config; //sets config
                     this._validSteps[i].step = i+1; //sets step value
                     this._validSteps[i].stepsTotal = this._validSteps.length //sets stepsTotal
                     this._validSteps[i].target = document.querySelector(this._validSteps[i].targetSelector); //updates step target
                 }
-                console.log("FEZ REGISTRO DOS PASSOS!!!!");
-            },
-            // Initializes the tutorial
-            _initialize: function() {
-                this._reset();
-                //this._registerSteps();
-                this.addEventListener('next', this.next.bind(this)); // , function(e){this.next(e)}
-                this.addEventListener('back', this.back.bind(this));
-                this.addEventListener('abort', this.abort.bind(this));
-                this.addEventListener('info-request', this.back.bind(this));
-                this.addEventListener('new-backdrop', this._newBackdrop.bind(this));
-                this.addEventListener('update-backdrop', this._layoutDialog.bind(this));
-                this.addEventListener('core-overlay-position', this._layoutDialog.bind(this));
-                this.addEventListener('core-overlay-close-completed', this._log.bind(this));
-                this.addEventListener('core-media-change', this._updateOnMediaChange.bind(this));
-
             },
             // Updates the children inside the tutorial when some change occurs
             _update: function() {
+                if (event.type == "core-media-change") {
+                    this.abort();
+                };
                 this._registerSteps();
                 //this.onMutation(this, this._update); //watches component changes
             },
@@ -447,10 +436,8 @@ element page to see how it is implemented at tutorial.
                 }
             },
             // temp (delete)
-            _log: function(){
-                //console.log("core-overlay-close-completed");
-                //console.log("update-backdrop");
-                //console.log("core-media-change!!!!!!!");
+            _log: function(e){
+                console.log("Event: " + e.type);
             }
         });
     </script>
