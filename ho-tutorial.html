@@ -23,7 +23,7 @@ element page to see how it is implemented at tutorial.
     </ho-tutorial>
 
 @element ho-tutorial
-@version 0.1.9
+@version 0.1.10
 @blurb Displays a floating step by step tutorial linked to interface elements.
 @status alpha
 @homepage http://hiperoriginal.github.io/components/ho-tutorial
@@ -428,12 +428,16 @@ element page to see how it is implemented at tutorial.
                     this._validSteps[i].step = i+1; //sets step value
                     this._validSteps[i].stepsTotal = this._validSteps.length //sets stepsTotal
                     this._validSteps[i].target = document.querySelector(this._validSteps[i].targetSelector); //updates step target
+                    console.log(this._validSteps[i].isActive);
                 }
+                console.log(this._validSteps);
+                console.log(this.children);
             },
             // Updates the children inside the tutorial when some change occurs
             _update: function(e) {
                 if (e != undefined && e.type === "core-media-change") {
                     this.abort();
+                    console.log(e.type);
                     //this.fire('aborted-on-breakpoint');
                 };
 

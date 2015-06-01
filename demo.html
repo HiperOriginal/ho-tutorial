@@ -71,12 +71,12 @@
         </div>
 
         <ho-tutorial id="tutorial_1" config="{{tutorial.config}}" startFrom="{{1}}">
-            <ho-tutorial-step heading="Red spot" targetSelector="#example1" on-enter="{{log}}" on-exit="{{log}}" mediaQuery="{{mediaQuery}}" queryMatches="{{isActive}}" isActive="{{isActive}}">
+            <ho-tutorial-step heading="Red spot" targetSelector="#example1" on-enter="{{log}}" on-exit="{{log}}" mediaQuery="{{mediaQuery}}">
                 The component automatically highlights the target element and positions the dialog.
                 An offset could be configured around the target element to be more flexible in highlighting.
             </ho-tutorial-step>
 
-            <ho-tutorial-step heading="Green spot" targetSelector="#example2" refPosition="bottom" refAlignment="center">
+            <ho-tutorial-step heading="Green spot" targetSelector="#example2" refPosition="bottom" refAlignment="center"  mediaQuery="max-width: 800px">
                 <p>The backdrop could be easily disabled. By using the targetSelector attribute, the target element could be directly defined.</p>
             </ho-tutorial-step>
 

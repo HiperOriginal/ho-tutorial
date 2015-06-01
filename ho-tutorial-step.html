@@ -25,7 +25,7 @@ content presented in the dialog that is shown when the step is activated.
 
     <!-- Default Template -->
     <template>
-        <core-media-query query="{{mediaQuery}}" queryMatches="{{queryMatches}}"></core-media-query>
+        <core-media-query query="{{mediaQuery}}" queryMatches="{{isActive}}"></core-media-query>
         <paper-action-dialog transition="core-transition-center" heading="{{heading}}" id="dialog" class="default-template is-active-{{isActive}} core-transition core-transition-center" autoCloseDisabled>
             <!-- arrow -->
             <div id="arrow"></div>
