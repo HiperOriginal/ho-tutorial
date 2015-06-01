@@ -130,15 +130,7 @@ element page to see how it is implemented at tutorial.
 
             ready: function() {
                 this._reset();
-                this.addEventListener('next', function(e){this.next(e)}); // , function(e){this.next(e)}
-                this.addEventListener('back', function(e){this.back(e)});
-                this.addEventListener('abort', function(e){this.abort(e)});
-                this.addEventListener('info-request', function(e){this._log(e)});
-                this.addEventListener('new-backdrop', function(){this._newBackdrop()});
-                this.addEventListener('update-backdrop', function(e){this._layoutDialog(e)});
-                this.addEventListener('core-overlay-position', function(e){this._layoutDialog(e)});
-                this.addEventListener('core-overlay-close-completed', function(e){this._log(e)});
-                this.addEventListener('core-media-change', function(e){this._update(e)});
+                this._setListeners();
             },
 
             /**
@@ -179,7 +171,6 @@ element page to see how it is implemented at tutorial.
                     newStep.firstStep = this.currentIndex == 0; //sets true if step to show is the first step at the flow
                     newStep.lastStep = this.currentIndex + 1 == this._validSteps.length; //sets true if step to show is the first step at the flow
 
-                    console.log(newStep);
                     newStep.open();
 
                 } else {
@@ -190,7 +181,6 @@ element page to see how it is implemented at tutorial.
                 if (this.currentIndex > 0 && this.currentIndex < this._validSteps.length) {
                     var oldStep = this._validSteps[this.currentIndex-1];
                     setTimeout(function () {
-                        console.log(oldStep);
                         oldStep.close();
                     }, 50);
                 }
@@ -250,13 +240,19 @@ element page to see how it is implemented at tutorial.
             // The current valid steps on tutorial
             _validSteps: [],
 
+            // Starts tutorial with delay
+            _lazyStart: function(event) {
+                this.job('start', function() {
+                    this.start();
+                }, 100);
+            },
+
             // Updates dialog box
             _layoutDialog: function(event) {
                 // Gets the dialog and target references
                 if (event.type == "core-overlay-position") {
                     this.dialog = event.detail.target;
                     this.target = event.target.target;
-                    console.log(event.type);
                 }
 
                 // Calculates the dialog according the target
@@ -395,6 +391,30 @@ element page to see how it is implemented at tutorial.
                 this.dialog = null;
                 this.target = null;
             },
+            _setListeners: function() {
+                this.addEventListener('next', function(e){this.next(e)}); // , function(e){this.next(e)}
+                this.addEventListener('back', function(e){this.back(e)});
+                this.addEventListener('abort', function(e){this.abort(e)});
+                this.addEventListener('info-request', function(e){this._log(e)});
+                this.addEventListener('new-backdrop', function(){this._newBackdrop()});
+                this.addEventListener('update-backdrop', function(e){this._layoutDialog(e)});
+                this.addEventListener('core-overlay-position', function(e){this._layoutDialog(e)});
+                this.addEventListener('core-overlay-close-completed', function(e){this._log(e)});
+                this.addEventListener('core-media-change', function(e){this._update(e)});
+                this.addEventListener('aborted-on-breakpoint', function(e){this._lazyStart(e)});
+            },
+            _removeListeners: function() {
+                this.removeEventListener('next');
+                this.removeEventListener('back');
+                this.removeEventListener('abort');
+                this.removeEventListener('info-request');
+                this.removeEventListener('new-backdrop');
+                this.removeEventListener('update-backdrop');
+                this.removeEventListener('core-overlay-position');
+                this.removeEventListener('core-overlay-close-completed');
+                this.removeEventListener('core-media-change');
+                this.removeEventListener('aborted-on-breakpoint');
+            },
             // Registers all steps in tutorial
             _registerSteps: function() {
                 this._validSteps = [];
@@ -411,17 +431,14 @@ element page to see how it is implemented at tutorial.
                 }
             },
             // Updates the children inside the tutorial when some change occurs
-            _update: function() {
-                if (event.type == "core-media-change") {
+            _update: function(e) {
+                if (e != undefined && e.type === "core-media-change") {
                     this.abort();
+                    //this.fire('aborted-on-breakpoint');
                 };
+
                 this._registerSteps();
                 //this.onMutation(this, this._update); //watches component changes
-            },
-            _updateOnMediaChange: function() {
-                //this._initialize();
-                //this.start();
-                //this._registerSteps();
             },
             _hasClass: function(element, className) {
                 return !!element.className.match(new RegExp('(\\s|^)'+className+'(\\s|$)'));
@@ -437,7 +454,7 @@ element page to see how it is implemented at tutorial.
             },
             // temp (delete)
             _log: function(e){
-                console.log("Event: " + e.type);
+                //console.log("Event: " + e.type);
             }
         });
     </script>

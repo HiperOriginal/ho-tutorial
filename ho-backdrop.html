@@ -88,13 +88,13 @@ sub-part of a specific area on the website.
       },
 
       ready: function() {
-        this.targetChanged();
+          this.targetChanged();
           var that = this; //important!
 
           window.addEventListener("resize", function() {
               if(that.visible) {
-                  that._calcLazyBackdrop();
-              }
+                  that._calcBackdrop();
+              };
           });
       },
       _createBackdropElement: function(target) {
@@ -104,13 +104,14 @@ sub-part of a specific area on the website.
         return elem;
       },
       _calcBackdrop: function (){
+          this._updateBackdrop();
           //console.log(this.stage);
           var stageRect = this.stage.getBoundingClientRect();
           var targetRect;
           if (this.target) {
               targetRect = this.target.getBoundingClientRect();
           } else {
-              // Calculate center of current target area
+              // Calculates center of screen
               var vertCenter = Math.ceil(
                       (parseFloat(this.bottom.style.top) +
                       parseFloat(this.top.style.top) +
@@ -156,21 +157,20 @@ sub-part of a specific area on the website.
           this.left.style.bottom = window.innerHeight - stageRect.bottom + 'px';
           this.left.style.left = stageRect.left + 'px';
 
-          this._updateBackdrop();
       },
       _calcLazyBackdrop: function () {
           this.job('calc-backdrop', function() {
               this._calcBackdrop();
-          }, 100);
+          }, 50);
       },
-      targetChanged: function(oldTarget, newTarget) {
+      targetChanged: function() {
         if (this.visible) {
-          this._initBackdrop();
+            this._initBackdrop();
         } else {
-          this._resetBackdrop();
-          return;
+            this._resetBackdrop();
+            return;
         }
-        this._calcBackdrop();
+          this._calcBackdrop();
       },
       stageChanged: function() {
         this.targetChanged();
