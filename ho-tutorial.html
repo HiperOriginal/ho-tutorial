@@ -23,7 +23,7 @@ element page to see how it is implemented at tutorial.
     </ho-tutorial>
 
 @element ho-tutorial
-@version 0.1.10
+@version 0.1.11
 @blurb Displays a floating step by step tutorial linked to interface elements.
 @status alpha
 @homepage http://hiperoriginal.github.io/components/ho-tutorial
@@ -237,6 +237,21 @@ element page to see how it is implemented at tutorial.
                 this._removeClass(document.body, "disable-scroll");
             },
 
+            /**
+             * Finishes a running tutorial.
+             * Closes all dialogues and resets properties.
+             *
+             * @method finish
+             */
+            finish: function(event) {
+                this.abort();
+                /*
+                this._closeAll();
+                this._reset();
+                this._removeClass(document.body, "disable-scroll");
+                */
+            },
+
             // The current valid steps on tutorial
             _validSteps: [],
 
@@ -395,6 +410,7 @@ element page to see how it is implemented at tutorial.
                 this.addEventListener('next', function(e){this.next(e)}); // , function(e){this.next(e)}
                 this.addEventListener('back', function(e){this.back(e)});
                 this.addEventListener('abort', function(e){this.abort(e)});
+                this.addEventListener('finish', function(e){this.finish(e)});
                 this.addEventListener('info-request', function(e){this._log(e)});
                 this.addEventListener('new-backdrop', function(){this._newBackdrop()});
                 this.addEventListener('update-backdrop', function(e){this._layoutDialog(e)});
@@ -407,6 +423,7 @@ element page to see how it is implemented at tutorial.
                 this.removeEventListener('next');
                 this.removeEventListener('back');
                 this.removeEventListener('abort');
+                this.removeEventListener('finish');
                 this.removeEventListener('info-request');
                 this.removeEventListener('new-backdrop');
                 this.removeEventListener('update-backdrop');

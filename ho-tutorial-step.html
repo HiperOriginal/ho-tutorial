@@ -60,7 +60,7 @@ content presented in the dialog that is shown when the step is activated.
             </template>
 
             <template if="{{lastStep}}">
-                <paper-button id="finish" on-click="{{_abort}}" class="colored orange no-icon" affirmative>
+                <paper-button id="finish" on-click="{{_finish}}" class="colored orange no-icon" affirmative>
                     <div horizontal layout center>
                         <span>{{config.texts.finish}}</span>
                     </div>
@@ -300,6 +300,16 @@ content presented in the dialog that is shown when the step is activated.
              */
             _abort: function(event) {
                 this.fire('abort');
+            },
+
+            /**
+             * The `finish` event is fired whenever the
+             * user finishes the tutorial at the step.
+             *
+             * @event finish
+             */
+            _finish: function(event) {
+                this.fire('finish');
             },
 
             /**

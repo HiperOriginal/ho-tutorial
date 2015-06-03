@@ -96,6 +96,12 @@ sub-part of a specific area on the website.
                   that._calcBackdrop();
               };
           });
+
+          window.addEventListener("scroll", function() {
+              if(that.visible) {
+                  that._calcBackdrop();
+              };
+          });
       },
       _createBackdropElement: function(target) {
         var elem = document.createElement('div');
