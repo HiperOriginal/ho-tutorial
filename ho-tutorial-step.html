@@ -52,7 +52,14 @@ content presented in the dialog that is shown when the step is activated.
                 </paper-button>
             </template>
 
-            <template if="{{nextAvailable && !lastStep}}">
+            <template if="{{nextAvailable && firstStep}}">
+                <paper-button id="next" on-click="{{_next}}" class="first-step colored orange right" affirmative>
+                    <span>{{config.texts.next}}</span>
+                    <core-icon icon="chevron-right"></core-icon>
+                </paper-button>
+            </template>
+
+            <template if="{{nextAvailable && !lastStep && !firstStep}}">
                 <paper-button id="next" on-click="{{_next}}" class="colored orange right" affirmative>
                     <span>{{config.texts.next}}</span>
                     <core-icon icon="chevron-right"></core-icon>

@@ -22,6 +22,9 @@ html /deep/ #dialog /deep/ #actions {
     margin:0 auto;
     padding: 20px;
 }
+html /deep/ #dialog /deep/ #actions div[flex] {
+    max-width:0px;
+}
 html /deep/ #dialog #arrow {
     position: fixed;
     display: none;
@@ -50,6 +53,10 @@ html /deep/ #dialog core-icon {
     width: 40px;
     height: 40px;
 }
+html /deep/ #dialog #close core-icon {
+    width: 24px;
+    height: 24px;
+}
 html /deep/ #dialog paper-button {
     margin: 0 0.8em;
     border-radius: 2px;
@@ -66,12 +73,15 @@ html /deep/ #dialog paper-button span {
 html /deep/ #dialog paper-button.right span {
     margin-left: 0.4em;
 }
+html /deep/ #dialog paper-button.right.first-step {
+    margin: 0 auto;
+}
 html /deep/ #dialog paper-button.left span {
     margin-right: 0.4em;
 }
 html /deep/ #dialog paper-button.no-icon div {
-    height: 32px;
-    padding: 0 0.8em;
+    height: 100%;
+    padding: 0.4em 0.8em;
 }
 html /deep/ #dialog paper-button#finish span {
     font-size: 14px;

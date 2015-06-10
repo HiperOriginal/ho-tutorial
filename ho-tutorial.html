@@ -281,7 +281,7 @@ element page to see how it is implemented at tutorial.
                     var targetMiddle = targetRect.bottom - (targetRect.height / 2);
                     var targetCenter = targetRect.right - (targetRect.width / 2);
                     var step = this._validSteps[this.currentIndex];
-                    var arrow = dialog.children.arrow;
+                    var arrow = dialog.children[0] //.children.arrow;
 
                     /*
                     var leftPosition = targetRect.left > window.innerWidth - targetRect.right;
