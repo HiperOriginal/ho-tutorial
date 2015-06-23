@@ -143,8 +143,10 @@ element page to see how it is implemented at tutorial.
             start: function() {
                 this._reset();
                 this._addClass(document.body, "disable-scroll");
-                this._update();
-                this.next();
+                if(this._update()){
+                    this.next();
+                };
+
             },
 
             /**
@@ -245,11 +247,6 @@ element page to see how it is implemented at tutorial.
              */
             finish: function(event) {
                 this.abort();
-                /*
-                this._closeAll();
-                this._reset();
-                this._removeClass(document.body, "disable-scroll");
-                */
             },
 
             // The current valid steps on tutorial
@@ -438,6 +435,13 @@ element page to see how it is implemented at tutorial.
                 for (var i = 0; i < this.children.length; i++) {
                     if(this.children[i].isActive) {
                         this._validSteps.push(this.children[i]);
+                        if(this.children[i].hasAttribute("targetSelector")){
+                            if(document.querySelector(this.children[i].targetSelector) == null){
+                                //console.error("ho-tutorial error: A specified target selector was not found! '" + this.children[i].targetSelector + "'");
+                                this.abort();
+                                return false;
+                            }
+                        }
                     }
                 }
                 for (var i = 0; i < this._validSteps.length; i++) {
@@ -446,7 +450,7 @@ element page to see how it is implemented at tutorial.
                     this._validSteps[i].stepsTotal = this._validSteps.length //sets stepsTotal
                     this._validSteps[i].target = document.querySelector(this._validSteps[i].targetSelector); //updates step target
                 }
-
+                return true;
             },
             // Updates the children inside the tutorial when some change occurs
             _update: function(e) {
@@ -454,8 +458,10 @@ element page to see how it is implemented at tutorial.
                     this.abort();
                     //this.fire('aborted-on-breakpoint');
                 };
-
-                this._registerSteps();
+                if(!this._registerSteps()){
+                    return false;
+                }
+                return true;
                 //this.onMutation(this, this._update); //watches component changes
             },
             _hasClass: function(element, className) {
