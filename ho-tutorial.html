@@ -134,6 +134,15 @@ element page to see how it is implemented at tutorial.
             },
 
             /**
+             * Validates the tutorial trying to register the steps
+             * @method validate
+             */
+            validate: function() {
+                this._reset();
+                this._validate();
+            },
+
+            /**
              * Starts the tutorial and shows the first step. If
              * this method is called in between of a tutorial, the
              * tutorial is restarted.
@@ -247,6 +256,35 @@ element page to see how it is implemented at tutorial.
              */
             finish: function(event) {
                 this.abort();
+            },
+
+            /**
+             * The `valid` event is fired when all specified target selectors are found.
+             *
+             * @event valid
+             */
+            _valid: function(event) {
+                this.fire('valid');
+            },
+
+            /**
+             * The `invalid` event is fired when a specified target selector is not found.
+             *
+             * @event invalid
+             */
+            _invalid: function(event) {
+                console.error("The tutorial is invalid!");
+                this.fire('invalid');
+            },
+
+            /**
+             * The `error` event is fired when an error occurs.
+             *
+             * @event error
+             */
+            _error: function(event) {
+                console.error(this.error);
+                this.fire('error');
             },
 
             // The current valid steps on tutorial
@@ -431,15 +469,16 @@ element page to see how it is implemented at tutorial.
             },
             // Registers all steps in tutorial
             _registerSteps: function() {
+                var targetSelector = "";
                 this._validSteps = [];
                 for (var i = 0; i < this.children.length; i++) {
                     if(this.children[i].isActive) {
                         this._validSteps.push(this.children[i]);
                         if(this.children[i].hasAttribute("targetSelector")){
                             if(document.querySelector(this.children[i].targetSelector) == null){
-                                //console.error("ho-tutorial error: A specified target selector was not found! '" + this.children[i].targetSelector + "'");
-                                this.abort();
-                                return false;
+                                targetSelector = this.children[i].targetSelector;
+                                this.error = "ho-tutorial error: A specified target selector was not found! '" + targetSelector + "'";
+                                return this.error
                             }
                         }
                     }
@@ -452,13 +491,23 @@ element page to see how it is implemented at tutorial.
                 }
                 return true;
             },
+            // Try to validate the steps
+            _validate: function() {
+                if(this._registerSteps() == this.error){
+                    this._invalid();
+                    this._error();
+                    return false;
+                }
+                this._valid();
+                return true;
+            },
             // Updates the children inside the tutorial when some change occurs
             _update: function(e) {
                 if (e != undefined && e.type === "core-media-change") {
                     this.abort();
                     //this.fire('aborted-on-breakpoint');
                 };
-                if(!this._registerSteps()){
+                if(this._registerSteps() == this.error){
                     return false;
                 }
                 return true;

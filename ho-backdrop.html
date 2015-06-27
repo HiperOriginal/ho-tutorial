@@ -163,6 +163,12 @@ sub-part of a specific area on the website.
           this.left.style.bottom = window.innerHeight - stageRect.bottom + 'px';
           this.left.style.left = stageRect.left + 'px';
 
+          this.hole.style.top = targetRect.top - this.offset.top + 'px';
+          this.hole.style.right = 'initial';
+          this.hole.style.width = targetRect.width + this.offset.left + this.offset.right + 'px';
+          this.hole.style.height = targetRect.height + 'px';
+          this.hole.style.left = targetRect.left - this.offset.left + 'px';
+
       },
       _calcLazyBackdrop: function () {
           this.job('calc-backdrop', function() {
@@ -190,14 +196,16 @@ sub-part of a specific area on the website.
           this.right = this._createBackdropElement(this.stage);
           this.bottom = this._createBackdropElement(this.stage);
           this.left = this._createBackdropElement(this.stage);
+          this.hole = this._createBackdropElement(this.stage);
+          this.hole.className = 'ho-backdrop hole';
         }
       },
       _resetBackdrop: function() {
         if (this.top) {
-          [this.top, this.right, this.bottom, this.left].forEach(function(backdrop) {
+          [this.top, this.right, this.bottom, this.left, this.hole].forEach(function(backdrop) {
             backdrop.remove();
           });
-          this.top = this.right = this.bottom = this.left = null;
+          this.top = this.right = this.bottom = this.left = this.hole = null;
         }
       }
     });
